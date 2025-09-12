@@ -1,5 +1,4 @@
-# Define a versão do docker-compose
-version: '3.8'
+
 
 # Define os serviços que serão executados
 services:
@@ -9,7 +8,7 @@ services:
     # Usa a imagem oficial do Jenkins com suporte a plugins
     image: jenkins/jenkins:lts
     # Define o nome do container
-    container_name: jenkins
+    container_name: jenkins-cypress
     # Mapeia a porta 8080 do host para acessar a interface do Jenkins
     ports:
       - "8080:8080"

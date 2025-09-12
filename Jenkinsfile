@@ -31,6 +31,17 @@ pipeline {
       }
     }
 
+    stage('Verificar relatório Cypress') {
+        steps {
+            echo 'Listando arquivos do relatório Cypress...'
+            sh 'ls -lh cypress/reports/html'
+
+            echo 'Exibindo início do conteúdo do mochawesome.html...'
+            sh 'head -n 20 cypress/reports/html/mochawesome.html'
+        }
+    }
+
+
     // Quarto estágio: publicar o relatório HTML do Mochawesome
     stage('Publicar relatório HTML') {
       steps {

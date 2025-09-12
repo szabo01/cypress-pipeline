@@ -45,7 +45,9 @@ module.exports = defineConfig({
       inlineAssets: true,
 
       // Salva apenas o último resultado de cada teste, ignorando tentativas anteriores
-      saveAllAttempts: false
+      saveAllAttempts: false,
+
+      overwrite: true 
     }
   },
 

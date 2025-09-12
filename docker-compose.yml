@@ -1,0 +1,43 @@
+# Define a versão do docker-compose
+version: '3.8'
+
+# Define os serviços que serão executados
+services:
+
+  # Serviço do Jenkins
+  jenkins:
+    # Usa a imagem oficial do Jenkins com suporte a plugins
+    image: jenkins/jenkins:lts
+    # Define o nome do container
+    container_name: jenkins
+    # Mapeia a porta 8080 do host para acessar a interface do Jenkins
+    ports:
+      - "8080:8080"
+    # Mapeia a porta 50000 para agentes remotos (caso use slave nodes)
+      - "50000:50000"
+    # Define volumes persistentes para manter dados entre execuções
+    volumes:
+      - jenkins_home:/var/jenkins_home
+    # Define o tempo de espera para o Jenkins iniciar antes de outros serviços dependerem dele
+    restart: unless-stopped
+
+  # Serviço do Cypress
+  cypress:
+    # Usa a imagem personalizada que você criou com o Dockerfile
+    build:
+      context: .
+      dockerfile: Dockerfile
+    # Define o nome do container
+    container_name: cypress
+    # Executa os testes automaticamente ao iniciar
+    command: ["npx", "cypress", "run"]
+    # Define volumes para compartilhar arquivos entre Cypress e Jenkins
+    volumes:
+      - .:/app
+    # Aguarda o Jenkins estar pronto antes de rodar (opcional, se quiser orquestrar)
+    depends_on:
+      - jenkins
+
+# Define volumes persistentes para o Jenkins
+volumes:
+  jenkins_home:

@@ -19,7 +19,7 @@ pipeline {
     stage('Executar testes') {
       steps {
         // Roda os testes em modo headless
-        sh 'npx cypress run'
+        sh 'npm run cy:run:chrome'
       }
     }
 

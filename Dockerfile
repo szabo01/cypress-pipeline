@@ -17,4 +17,4 @@ COPY . .
 ENV CYPRESS_CACHE_FOLDER=/root/.cache/Cypress
 
 # Executa os testes do Cypress em modo headless (sem abrir navegador)
-CMD ["npx", "cypress", "run"]
+CMD ["npx", "cypress", "cy:run:chrome"]

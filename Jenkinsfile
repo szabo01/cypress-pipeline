@@ -56,5 +56,17 @@ pipeline {
         ])
       }
     }
+
+    stage('Publicar artefato do relatório') {
+      steps {
+        archiveArtifacts artifacts: 'cypress/reports/html/index.html', fingerprint: true
+      }
+    }
+
+    stage('Publicar screenshots (opcional)') {
+      steps {
+        archiveArtifacts artifacts: 'cypress/screenshots/**/*.png', fingerprint: true
+      }
+    }
   }
 }

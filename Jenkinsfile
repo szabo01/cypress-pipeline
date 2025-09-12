@@ -37,7 +37,7 @@ pipeline {
             sh 'ls -lh cypress/reports/html'
 
             echo 'Exibindo início do conteúdo do mochawesome.html...'
-            sh 'head -n 20 cypress/reports/html/mochawesome.html'
+            sh 'head -n 20 cypress/reports/html/index.html'
         }
     }
 

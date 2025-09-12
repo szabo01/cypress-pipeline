@@ -48,7 +48,7 @@ pipeline {
         // Usa o plugin HTML Publisher para exibir o relatório visual no Jenkins
         publishHTML([
           reportDir: 'cypress/reports/html',
-          reportFiles: 'mochawesome.html',
+          reportFiles: 'index.html',
           reportName: 'Relatório Cypress',
           keepAll: true,
           alwaysLinkToLastBuild: true,

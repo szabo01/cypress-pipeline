@@ -1,70 +1,79 @@
-// Define que a pipeline será declarativa (mais legível e organizada)
+// Define que a pipeline será declarativa — mais legível, estruturada e fácil de manter
 pipeline {
 
-  // Define o agente que vai executar os passos — neste caso, qualquer máquina disponível
+  // Define o agente que executará os estágios — neste caso, qualquer máquina disponível
   agent any
 
-  // Define os estágios da pipeline
+  // Bloco que contém todos os estágios da pipeline
   stages {
 
-    // Primeiro estágio: instalar dependências
+    // 🧩 Estágio 1: Instalação das dependências do projeto
     stage('Instalar dependências') {
       steps {
-        // Usa o npm para instalar tudo conforme o package-lock.json
+        // Executa 'npm ci' para instalar as dependências com base no package-lock.json
+        // Mais rápido e confiável para ambientes de CI
         sh 'npm ci'
       }
     }
 
-    // Segundo estágio: executar os testes do Cypress
+    // 🧪 Estágio 2: Execução dos testes automatizados com Cypress
     stage('Executar testes') {
       steps {
-        // Roda os testes em modo headless
+        // Roda os testes em modo headless usando o Chrome
+        // O script 'cy:run:chrome' deve estar definido no package.json
         sh 'npm run cy:run:chrome'
       }
     }
 
-    // Terceiro estágio: publicar os relatórios JUnit no Jenkins
+    // 📄 Estágio 3: Publicação dos relatórios JUnit (XML) no Jenkins
     stage('Publicar relatório JUnit') {
       steps {
         // Publica os arquivos XML gerados pelo mocha-junit-reporter
+        // Permite visualização dos testes no painel do Jenkins
         junit 'cypress/reports/junit/*.xml'
       }
     }
 
+    // 🔍 Estágio 4: Verificação manual do conteúdo do relatório HTML
     stage('Verificar relatório Cypress') {
-        steps {
-            echo 'Listando arquivos do relatório Cypress...'
-            sh 'ls -lh cypress/reports/html'
+      steps {
+        // Lista os arquivos gerados no diretório de relatórios HTML
+        echo 'Listando arquivos do relatório Cypress...'
+        sh 'ls -lh cypress/reports/html'
 
-            echo 'Exibindo início do conteúdo do mochawesome.html...'
-            sh 'head -n 20 cypress/reports/html/index.html'
-        }
+        // Exibe as primeiras linhas do index.html para validar se foi gerado corretamente
+        echo 'Exibindo início do conteúdo do mochawesome.html...'
+        sh 'head -n 20 cypress/reports/html/index.html'
+      }
     }
 
-
-    // Quarto estágio: publicar o relatório HTML do Mochawesome
+    // 📊 Estágio 5: Publicação do relatório HTML interativo no Jenkins
     stage('Publicar relatório HTML') {
       steps {
-        // Usa o plugin HTML Publisher para exibir o relatório visual no Jenkins
+        // Usa o plugin HTML Publisher para exibir o relatório visual no painel do Jenkins
         publishHTML([
-          reportDir: 'cypress/reports/html',
-          reportFiles: 'index.html',
-          reportName: 'Relatório Cypress',
-          keepAll: true,
-          alwaysLinkToLastBuild: true,
-          allowMissing: false
+          reportDir: 'cypress/reports/html',       // Diretório onde está o index.html
+          reportFiles: 'index.html',               // Arquivo principal do relatório
+          reportName: 'Relatório Cypress',         // Nome que aparecerá no Jenkins
+          keepAll: true,                           // Mantém relatórios de builds anteriores
+          alwaysLinkToLastBuild: true,             // Cria link direto para o último build
+          allowMissing: false                      // Fails se o arquivo estiver ausente
         ])
       }
     }
 
+    // 📁 Estágio 6: Publicação do index.html como artefato
     stage('Publicar artefato do relatório') {
       steps {
+        // Salva o index.html como artefato acessível por build
         archiveArtifacts artifacts: 'cypress/reports/html/index.html', fingerprint: true
       }
     }
 
+    // 🖼️ Estágio 7: Publicação dos screenshots como artefatos (opcional)
     stage('Publicar screenshots (opcional)') {
       steps {
+        // Salva todas as imagens geradas durante os testes como artefatos
         archiveArtifacts artifacts: 'cypress/screenshots/**/*.png', fingerprint: true
       }
     }
